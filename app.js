@@ -1,0 +1,36 @@
+const express= require('express');
+const multer= require('multer');
+const {callEncrypt, callDecrypt}= require('./encrypt_decrypt.js')
+
+const app = express();
+const upload= multer();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
+
+app.post('/encrypt',upload.single('image'), function(req, res){
+  callEncrypt(req.file.buffer.toString('base64'))
+})
+
+app.post('/decrypt',upload.single('json_file'), function(req, res){
+  callDecrypt(req.file.buffer.toString('utf8'))
+})
+
+
+
+// function x() {
+//   let cte = CryptoJS.AES.encrypt('hello', "helloworld");
+//   console.log(cte);
+//   console.log("\n \n");
+
+//   const decrypted = CryptoJS.AES.decrypt(cte, "helloworld");
+//   const buf = Buffer.from(decrypted.toString(), 'hex');
+//   console.log(buf.toString('utf8'));
+// }
+
+
+
+app.listen(3000, function () {
+  console.log("Server running.");
+});
