@@ -15,7 +15,7 @@ app.use(express.static("public"));
 //   res.d(fs.writeFileSync("encrypt.json", JSON.stringify(obj, null, 2)));
 // })
 
-app.get('/', (req, res) =>{
+app.use('/', (req, res) =>{
   res.json({message: "use /encrypt or /decrypt api endpoint"})
 })
 
@@ -42,6 +42,6 @@ app.post('/decrypt',upload.single('json_file'), function(req, res){
 
 
 
-app.listen(3001, function () {
+app.listen(process.env.PORT, function () {
   console.log("Server running.");
 });
