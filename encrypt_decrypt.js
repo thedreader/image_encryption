@@ -17,6 +17,7 @@ function callEncrypt(image) {
     'secretKey': "helloworld",
     'image': ctstr
   }
+  // return JSON.stringify(obj, null, 2)
   fs.writeFileSync("encrypt.json", JSON.stringify(obj, null, 2))
   // if(ctstr !== "") {callDecrypt()}
 
