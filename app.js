@@ -15,9 +15,9 @@ app.use(express.static("public"));
 //   res.d(fs.writeFileSync("encrypt.json", JSON.stringify(obj, null, 2)));
 // })
 
-app.use('/', (req, res) =>{
-  res.json({message: "use /encrypt or /decrypt api endpoint"})
-})
+app.get("/", (req, res) => {
+  res.send("Express on Vercel");
+});
 
 app.post('/encrypt',upload.single('image'), function(req, res){
   callEncrypt(req.file.buffer.toString('base64'))
@@ -42,6 +42,6 @@ app.post('/decrypt',upload.single('json_file'), function(req, res){
 
 
 
-app.listen(process.env.PORT, function () {
+app.listen(5000, function () {
   console.log("Server running.");
 });
