@@ -15,6 +15,10 @@ app.use(express.static("public"));
 //   res.d(fs.writeFileSync("encrypt.json", JSON.stringify(obj, null, 2)));
 // })
 
+app.get('/', (req, res) =>{
+  res.json({message: "use /encrypt or /decrypt api endpoint"})
+})
+
 app.post('/encrypt',upload.single('image'), function(req, res){
   callEncrypt(req.file.buffer.toString('base64'))
   // res.redirect('/encrypt')
