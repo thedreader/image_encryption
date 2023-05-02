@@ -1,47 +1,60 @@
-const express= require('express');
-const multer= require('multer');
+const express = require("express");
+const multer = require("multer");
 const fs = require("fs");
-const {callEncrypt, callDecrypt}= require('./encrypt_decrypt.js')
+const { callEncrypt, callDecrypt } = require("./encrypt_decrypt.js");
+const serverless = require('serverless-http');
 
 const app = express();
-const upload= multer();
+const upload = multer();
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
-// let obj
-
-// app.get('/encrypt', (req, res) =>{
-//   res.d(fs.writeFileSync("encrypt.json", JSON.stringify(obj, null, 2)));
-// })
-
-app.get("/", (req, res) => {
-  res.send("Express on Vercel");
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
 
-app.post('/encrypt',upload.single('image'), function(req, res){
-  callEncrypt(req.file.buffer.toString('base64'))
-  // res.redirect('/encrypt')
+app.get('/', function(req, res){
+  res.send("welcome to image encryption. The post and get routes are /encrypt and /decrypt !")
 })
 
-app.post('/decrypt',upload.single('json_file'), function(req, res){
-  callDecrypt(req.file.buffer.toString('utf8'))
-})
+app.get("/encrypt", (req, res) => {
+  res.download("encrypt.json", (err) => {
+    if (err) throw err;
+    fs.unlink("encrypt.json", (err) => {
+      if (err) throw err;
+    });
+  });
 
+});
 
+app.get("/decrypt", (req, res) => {
+  res.download("decypted.jpg", (err) => {
+    if (err) throw err;
+    fs.unlink("decypted.jpg", (err) => {
+      if (err) throw err;
+    });
+  });
 
-// function x() {
-//   let cte = CryptoJS.AES.encrypt('hello', "helloworld");
-//   console.log(cte);
-//   console.log("\n \n");
+});
 
-//   const decrypted = CryptoJS.AES.decrypt(cte, "helloworld");
-//   const buf = Buffer.from(decrypted.toString(), 'hex');
-//   console.log(buf.toString('utf8'));
-// }
+app.post("/encrypt", upload.single("image"), async function (req, res) {
+  console.log(req.body.secretKey);
+  callEncrypt(req.file.buffer.toString("base64"), req.body.secretKey);
+  res.send("done!");
+});
 
-
+app.post("/decrypt", upload.single("json_file"), function (req, res) {
+  console.log(req.body.secretKey);
+  callDecrypt(req.file.buffer.toString("utf8"), req.body.secretKey);
+  res.send("done")
+});
 
 app.listen(5000, function () {
   console.log("Server running.");
 });
+
+// module.exports.handler = serverless(app);
